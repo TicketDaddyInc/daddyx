@@ -1,0 +1,948 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: DaddyX API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: events
+    description: Event operations
+  - name: creator
+    description: Creator program operations
+  - name: admin
+    description: Admin operations
+  - name: campaigns
+    description: Campaign operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /events:
+    get:
+      operationId: listEvents
+      tags: [events]
+      summary: List all events with DaddyX enabled
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+
+  /events/create:
+    post:
+      operationId: createEvent
+      tags: [events]
+      summary: Create a new DaddyX event record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventBody"
+      responses:
+        "201":
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+  /events/{id}:
+    get:
+      operationId: getEvent
+      tags: [events]
+      summary: Get event detail with tokens and price history
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Event detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /events/{id}/purchase:
+    post:
+      operationId: recordPurchase
+      tags: [events]
+      summary: Record a token purchase after on-chain confirmation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseBody"
+      responses:
+        "200":
+          description: Purchase recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+
+  /events/{id}/report-revenue:
+    post:
+      operationId: reportRevenue
+      tags: [events]
+      summary: Admin - record revenue settlement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportRevenueBody"
+      responses:
+        "200":
+          description: Revenue reported
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+  /events/{id}/simulation:
+    get:
+      operationId: getSimulation
+      tags: [events]
+      summary: Get 20-point price curve simulation for an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Simulation data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SimulationPoint"
+
+  /creator/apply:
+    post:
+      operationId: applyAsCreator
+      tags: [creator]
+      summary: Submit creator program application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatorApplicationBody"
+      responses:
+        "201":
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Creator"
+
+  /creator/status:
+    get:
+      operationId: getCreatorStatus
+      tags: [creator]
+      summary: Check creator application status by wallet
+      parameters:
+        - name: wallet
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Creator status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Creator"
+        "404":
+          description: No application found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/creators/pending:
+    get:
+      operationId: listPendingCreators
+      tags: [admin]
+      summary: Admin - list pending creator applications
+      responses:
+        "200":
+          description: List of pending creators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Creator"
+
+  /admin/creators/approve:
+    post:
+      operationId: approveCreator
+      tags: [admin]
+      summary: Admin - approve a creator application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveCreatorBody"
+      responses:
+        "200":
+          description: Creator approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Creator"
+
+  /admin/creators/reject:
+    post:
+      operationId: rejectCreator
+      tags: [admin]
+      summary: Admin - reject a creator application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectCreatorBody"
+      responses:
+        "200":
+          description: Creator rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Creator"
+
+  /wallet/{wallet}/claim/{eventId}:
+    post:
+      operationId: claimRevenue
+      tags: [events]
+      summary: Fan claims revenue share for tokens held in a settled event
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Revenue claimed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResult"
+
+  /campaigns/create:
+    post:
+      operationId: createCampaign
+      tags: [campaigns]
+      summary: Create a campaign after on-chain confirmation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCampaignBody"
+      responses:
+        "201":
+          description: Campaign created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Campaign"
+
+  /campaigns/{id}/milestone/request:
+    post:
+      operationId: requestMilestone
+      tags: [campaigns]
+      summary: Organizer requests milestone release
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MilestoneRequestBody"
+      responses:
+        "200":
+          description: Milestone requested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Campaign"
+
+  /admin/campaigns/{id}/milestone/approve:
+    post:
+      operationId: approveMilestone
+      tags: [admin]
+      summary: Admin approves milestone release
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MilestoneApproveBody"
+      responses:
+        "200":
+          description: Milestone approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Campaign"
+
+  /stats/summary:
+    get:
+      operationId: getStatsSummary
+      tags: [events]
+      summary: Get platform-wide summary stats
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsSummary"
+
+  /events/{id}/holders:
+    get:
+      operationId: getTokenHolders
+      tags: [events]
+      summary: Get current token holders for an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Token holders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TokenHolder"
+
+  /wallet/{wallet}/portfolio:
+    get:
+      operationId: getWalletPortfolio
+      tags: [events]
+      summary: Get tokens held by a wallet across all events
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Wallet portfolio
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioToken"
+
+  /organizer/{wallet}/events:
+    get:
+      operationId: getOrganizerEvents
+      tags: [events]
+      summary: Get events for an organizer wallet
+      parameters:
+        - name: wallet
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Organizer events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+
+  /admin/oracle/pending:
+    get:
+      operationId: getOraclePending
+      tags: [admin]
+      summary: Get events past end date without revenue reported
+      responses:
+        "200":
+          description: Pending oracle events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required: [error]
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        eventConfigPda:
+          type: string
+        name:
+          type: string
+        venueName:
+          type: string
+        eventDate:
+          type: string
+        organizerWallet:
+          type: string
+        revenueShareBps:
+          type: number
+        initialPriceSol:
+          type: number
+        stepFactorBps:
+          type: number
+        payoutFactorBps:
+          type: number
+        tokenCount:
+          type: number
+        cancelled:
+          type: boolean
+        revenueReported:
+          type: boolean
+        settledRevenue:
+          type: number
+          nullable: true
+        daddyxEnabled:
+          type: boolean
+        imageUrl:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+        tokensRemaining:
+          type: number
+        nextTokenPriceSol:
+          type: number
+        endDate:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - venueName
+        - eventDate
+        - organizerWallet
+        - revenueShareBps
+        - initialPriceSol
+        - stepFactorBps
+        - payoutFactorBps
+        - tokenCount
+        - cancelled
+        - revenueReported
+        - daddyxEnabled
+        - tokensRemaining
+        - nextTokenPriceSol
+        - createdAt
+
+    Token:
+      type: object
+      properties:
+        id:
+          type: string
+        eventId:
+          type: string
+        tokenId:
+          type: number
+        currentOwner:
+          type: string
+        currentPrice:
+          type: number
+        entryPrice:
+          type: number
+        revenueClaimed:
+          type: boolean
+        purchasedAt:
+          type: string
+      required:
+        - id
+        - eventId
+        - tokenId
+        - currentOwner
+        - currentPrice
+        - entryPrice
+        - revenueClaimed
+        - purchasedAt
+
+    EventDetail:
+      type: object
+      properties:
+        event:
+          $ref: "#/components/schemas/Event"
+        tokens:
+          type: array
+          items:
+            $ref: "#/components/schemas/Token"
+        priceHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/PriceHistoryPoint"
+        simulation:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimulationPoint"
+      required: [event, tokens, priceHistory, simulation]
+
+    PriceHistoryPoint:
+      type: object
+      properties:
+        round:
+          type: number
+        price:
+          type: number
+        wallet:
+          type: string
+        timestamp:
+          type: string
+      required: [round, price, wallet, timestamp]
+
+    SimulationPoint:
+      type: object
+      properties:
+        n:
+          type: number
+        price:
+          type: number
+        organizerCumulative:
+          type: number
+        investorROI:
+          type: number
+      required: [n, price, organizerCumulative, investorROI]
+
+    TokenHolder:
+      type: object
+      properties:
+        tokenId:
+          type: number
+        wallet:
+          type: string
+        entryPrice:
+          type: number
+        currentPrice:
+          type: number
+        unrealisedRoiPct:
+          type: number
+      required: [tokenId, wallet, entryPrice, currentPrice, unrealisedRoiPct]
+
+    PortfolioToken:
+      type: object
+      properties:
+        tokenId:
+          type: number
+        eventId:
+          type: string
+        eventName:
+          type: string
+        eventDate:
+          type: string
+        entryPrice:
+          type: number
+        currentPrice:
+          type: number
+        unrealisedRoiPct:
+          type: number
+        revenueClaimed:
+          type: boolean
+        settled:
+          type: boolean
+        settledRevenue:
+          type: number
+          nullable: true
+        revenueShareBps:
+          type: number
+        tokenCount:
+          type: number
+      required:
+        - tokenId
+        - eventId
+        - eventName
+        - eventDate
+        - entryPrice
+        - currentPrice
+        - unrealisedRoiPct
+        - revenueClaimed
+        - settled
+        - revenueShareBps
+        - tokenCount
+
+    StatsSummary:
+      type: object
+      properties:
+        totalEvents:
+          type: number
+        daddyxEvents:
+          type: number
+        totalTokensSold:
+          type: number
+        totalCapitalRaisedSol:
+          type: number
+        totalHolders:
+          type: number
+        recentPurchases:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecentPurchase"
+      required:
+        - totalEvents
+        - daddyxEvents
+        - totalTokensSold
+        - totalCapitalRaisedSol
+        - totalHolders
+        - recentPurchases
+
+    RecentPurchase:
+      type: object
+      properties:
+        eventName:
+          type: string
+        tokenId:
+          type: number
+        wallet:
+          type: string
+        priceSol:
+          type: number
+        timestamp:
+          type: string
+      required: [eventName, tokenId, wallet, priceSol, timestamp]
+
+    Creator:
+      type: object
+      properties:
+        id:
+          type: string
+        wallet:
+          type: string
+        name:
+          type: string
+        country:
+          type: string
+        email:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, suspended]
+        appliedAt:
+          type: string
+        approvedAt:
+          type: string
+          nullable: true
+        organization:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        pastEvents:
+          type: string
+          nullable: true
+        expectedUse:
+          type: string
+          nullable: true
+      required: [id, wallet, name, country, email, status, appliedAt]
+
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: string
+        creatorId:
+          type: string
+        eventId:
+          type: string
+          nullable: true
+        name:
+          type: string
+        status:
+          type: string
+        capitalRaisedSol:
+          type: number
+        tokenCount:
+          type: number
+        milestone1Released:
+          type: boolean
+        milestone2Released:
+          type: boolean
+        milestone3Released:
+          type: boolean
+        milestone1Requested:
+          type: boolean
+        milestone2Requested:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - creatorId
+        - name
+        - status
+        - capitalRaisedSol
+        - tokenCount
+        - milestone1Released
+        - milestone2Released
+        - milestone3Released
+        - milestone1Requested
+        - milestone2Requested
+        - createdAt
+
+    CreateEventBody:
+      type: object
+      properties:
+        eventConfigPda:
+          type: string
+        name:
+          type: string
+        venueName:
+          type: string
+        eventDate:
+          type: string
+        organizerWallet:
+          type: string
+        revenueShareBps:
+          type: number
+        initialPriceSol:
+          type: number
+        stepFactorBps:
+          type: number
+        payoutFactorBps:
+          type: number
+        tokenCount:
+          type: number
+        daddyxEnabled:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        endDate:
+          type: string
+          nullable: true
+      required:
+        - name
+        - venueName
+        - eventDate
+        - organizerWallet
+        - revenueShareBps
+        - initialPriceSol
+        - stepFactorBps
+        - payoutFactorBps
+        - tokenCount
+        - daddyxEnabled
+
+    PurchaseBody:
+      type: object
+      properties:
+        tokenId:
+          type: number
+        buyerWallet:
+          type: string
+        priceSol:
+          type: number
+        txSignature:
+          type: string
+      required: [tokenId, buyerWallet, priceSol]
+
+    ReportRevenueBody:
+      type: object
+      properties:
+        revenue:
+          type: number
+        adminWallet:
+          type: string
+      required: [revenue, adminWallet]
+
+    CreatorApplicationBody:
+      type: object
+      properties:
+        wallet:
+          type: string
+        name:
+          type: string
+        organization:
+          type: string
+          nullable: true
+        country:
+          type: string
+        city:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        email:
+          type: string
+        pastEvents:
+          type: string
+          nullable: true
+        expectedUse:
+          type: string
+          nullable: true
+      required: [wallet, name, country, email]
+
+    ApproveCreatorBody:
+      type: object
+      properties:
+        wallet:
+          type: string
+        adminWallet:
+          type: string
+      required: [wallet, adminWallet]
+
+    CreateCampaignBody:
+      type: object
+      properties:
+        creatorWallet:
+          type: string
+        eventId:
+          type: string
+          nullable: true
+        name:
+          type: string
+        tokenCount:
+          type: number
+        campaignDetailsUri:
+          type: string
+          nullable: true
+      required: [creatorWallet, name, tokenCount]
+
+    MilestoneRequestBody:
+      type: object
+      properties:
+        milestoneIndex:
+          type: number
+        organizerWallet:
+          type: string
+      required: [milestoneIndex, organizerWallet]
+
+    MilestoneApproveBody:
+      type: object
+      properties:
+        milestoneIndex:
+          type: number
+        adminWallet:
+          type: string
+      required: [milestoneIndex, adminWallet]
+
+    RejectCreatorBody:
+      type: object
+      properties:
+        wallet:
+          type: string
+        adminWallet:
+          type: string
+        reason:
+          type: string
+          nullable: true
+      required: [wallet]
+
+    ClaimResult:
+      type: object
+      properties:
+        eventId:
+          type: string
+        wallet:
+          type: string
+        tokensClaimed:
+          type: number
+        revenueShareSol:
+          type: number
+        alreadyClaimed:
+          type: boolean
+      required: [eventId, wallet, tokensClaimed, revenueShareSol, alreadyClaimed]

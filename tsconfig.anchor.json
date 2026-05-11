@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["es2022"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "outDir": "dist/tests",
+    "types": ["mocha", "chai", "node"]
+  },
+  "include": ["tests/**/*.ts", "node_modules/@coral-xyz/anchor/dist/cjs/program/namespace/index.d.ts"],
+  "exclude": ["artifacts", "lib", "scripts"]
+}

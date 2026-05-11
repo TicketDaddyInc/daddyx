@@ -1,0 +1,1094 @@
+{
+  "address": "D1YJeGTthCfJ6UnKsQzz79fevvKhfRrT3jhiAC8Ct978",
+  "metadata": {
+    "name": "daddyx",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "DaddyX Fan-Powered Event Finance on Solana"
+  },
+  "instructions": [
+    {
+      "name": "initialize_platform",
+      "discriminator": [
+        119,
+        201,
+        101,
+        45,
+        75,
+        122,
+        89,
+        3
+      ],
+      "accounts": [
+        {
+          "name": "platform_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "platform_fee_bps",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "apply_as_creator",
+      "discriminator": [
+        125,
+        21,
+        245,
+        240,
+        160,
+        168,
+        86,
+        6
+      ],
+      "accounts": [
+        {
+          "name": "creator_profile",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "country",
+          "type": "string"
+        },
+        {
+          "name": "email_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "approve_creator",
+      "discriminator": [
+        46,
+        121,
+        119,
+        204,
+        155,
+        131,
+        73,
+        226
+      ],
+      "accounts": [
+        {
+          "name": "creator_profile",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "platform_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "admin",
+          "writable": false,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "suspend_creator",
+      "discriminator": [
+        250,
+        206,
+        154,
+        173,
+        150,
+        37,
+        249,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "creator_profile",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "platform_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "admin",
+          "writable": false,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_event",
+      "discriminator": [
+        126,
+        249,
+        86,
+        221,
+        202,
+        171,
+        134,
+        20
+      ],
+      "accounts": [
+        {
+          "name": "event_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "creator_profile",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "event_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "revenue_share_bps",
+          "type": "u64"
+        },
+        {
+          "name": "initial_price",
+          "type": "u64"
+        },
+        {
+          "name": "step_factor_bps",
+          "type": "u64"
+        },
+        {
+          "name": "payout_factor_bps",
+          "type": "u64"
+        },
+        {
+          "name": "token_count",
+          "type": "u64"
+        },
+        {
+          "name": "end_date",
+          "type": "i64"
+        },
+        {
+          "name": "oracle",
+          "type": "pubkey"
+        },
+        {
+          "name": "platform_fee_bps",
+          "type": "u64"
+        },
+        {
+          "name": "campaign_details_uri",
+          "type": "string"
+        },
+        {
+          "name": "budget_usd_cents",
+          "type": "u64"
+        },
+        {
+          "name": "remedy_type",
+          "type": {
+            "defined": {
+              "name": "Remedy"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize_token",
+      "discriminator": [
+        38,
+        209,
+        150,
+        50,
+        190,
+        117,
+        16,
+        54
+      ],
+      "accounts": [
+        {
+          "name": "token_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "token_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "purchase_token",
+      "discriminator": [
+        119,
+        226,
+        211,
+        96,
+        33,
+        236,
+        251,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "token_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "previous_owner",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "token_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "raise_price",
+      "discriminator": [
+        211,
+        58,
+        78,
+        251,
+        92,
+        186,
+        251,
+        219
+      ],
+      "accounts": [
+        {
+          "name": "token_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "token_id",
+          "type": "u64"
+        },
+        {
+          "name": "new_price",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "report_revenue",
+      "discriminator": [
+        85,
+        92,
+        103,
+        201,
+        22,
+        109,
+        246,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "event_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "oracle",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "ticket_revenue",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claim_revenue",
+      "discriminator": [
+        4,
+        22,
+        151,
+        70,
+        183,
+        79,
+        73,
+        189
+      ],
+      "accounts": [
+        {
+          "name": "token_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "claimer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "token_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "cancel_event",
+      "discriminator": [
+        55,
+        143,
+        36,
+        45,
+        59,
+        241,
+        89,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "event_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "authority",
+          "writable": false,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_refund",
+      "discriminator": [
+        15,
+        16,
+        30,
+        161,
+        255,
+        228,
+        97,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "token_state",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "claimer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "token_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "request_milestone_release",
+      "discriminator": [
+        246,
+        124,
+        88,
+        128,
+        163,
+        108,
+        154,
+        136
+      ],
+      "accounts": [
+        {
+          "name": "event_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "organizer",
+          "writable": false,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "milestone_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "approve_milestone_release",
+      "discriminator": [
+        14,
+        62,
+        208,
+        176,
+        4,
+        165,
+        123,
+        61
+      ],
+      "accounts": [
+        {
+          "name": "event_config",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "event_escrow",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": false
+        },
+        {
+          "name": "platform_config",
+          "writable": false,
+          "signer": false
+        },
+        {
+          "name": "admin",
+          "writable": false,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "milestone_index",
+          "type": "u8"
+        },
+        {
+          "name": "release_bps",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PlatformConfig",
+      "discriminator": [
+        160,
+        78,
+        128,
+        0,
+        248,
+        83,
+        230,
+        160
+      ]
+    },
+    {
+      "name": "CreatorProfile",
+      "discriminator": [
+        251,
+        250,
+        184,
+        111,
+        214,
+        178,
+        32,
+        221
+      ]
+    },
+    {
+      "name": "EventConfig",
+      "discriminator": [
+        85,
+        63,
+        74,
+        243,
+        198,
+        192,
+        138,
+        0
+      ]
+    },
+    {
+      "name": "TokenState",
+      "discriminator": [
+        218,
+        112,
+        6,
+        149,
+        55,
+        186,
+        168,
+        163
+      ]
+    },
+    {
+      "name": "EventEscrow",
+      "discriminator": [
+        85,
+        23,
+        101,
+        234,
+        111,
+        201,
+        49,
+        36
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "PlatformConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "platform_fee_bps",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreatorProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "type": "string"
+          },
+          {
+            "name": "email_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "applied_at",
+            "type": "i64"
+          },
+          {
+            "name": "approved_at",
+            "type": "i64"
+          },
+          {
+            "name": "event_count",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "CreatorStatus"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "organizer",
+            "type": "pubkey"
+          },
+          {
+            "name": "event_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "revenue_share_bps",
+            "type": "u64"
+          },
+          {
+            "name": "initial_price",
+            "type": "u64"
+          },
+          {
+            "name": "step_factor_bps",
+            "type": "u64"
+          },
+          {
+            "name": "payout_factor_bps",
+            "type": "u64"
+          },
+          {
+            "name": "token_count",
+            "type": "u64"
+          },
+          {
+            "name": "end_date",
+            "type": "i64"
+          },
+          {
+            "name": "cancelled",
+            "type": "bool"
+          },
+          {
+            "name": "revenue_reported",
+            "type": "bool"
+          },
+          {
+            "name": "settled_revenue",
+            "type": "u64"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          },
+          {
+            "name": "platform_fee_bps",
+            "type": "u64"
+          },
+          {
+            "name": "campaign_details_uri",
+            "type": "string"
+          },
+          {
+            "name": "budget_usd_cents",
+            "type": "u64"
+          },
+          {
+            "name": "organizer_fund_pool",
+            "type": "u64"
+          },
+          {
+            "name": "milestone_1_released",
+            "type": "bool"
+          },
+          {
+            "name": "milestone_2_released",
+            "type": "bool"
+          },
+          {
+            "name": "milestone_3_released",
+            "type": "bool"
+          },
+          {
+            "name": "remedy_type",
+            "type": {
+              "defined": {
+                "name": "Remedy"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "event_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_id",
+            "type": "u64"
+          },
+          {
+            "name": "current_owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "current_price",
+            "type": "u64"
+          },
+          {
+            "name": "entry_price",
+            "type": "u64"
+          },
+          {
+            "name": "revenue_claimed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventEscrow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "event_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreatorStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Approved"
+          },
+          {
+            "name": "Suspended"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Remedy",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CancelFullRefund"
+          },
+          {
+            "name": "PostponeTransfer"
+          },
+          {
+            "name": "PartialRefund"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidFactors",
+      "msg": "Step factor must be greater than payout factor"
+    },
+    {
+      "code": 6001,
+      "name": "PayoutFactorTooLow",
+      "msg": "Payout factor must be greater than 1 (10000 bps)"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidRevenueShare",
+      "msg": "Revenue share cannot exceed 100%"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTokenCount",
+      "msg": "Token count must be between 1 and 10000"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidEndDate",
+      "msg": "End date must be in the future"
+    },
+    {
+      "code": 6005,
+      "name": "NotOwner",
+      "msg": "Not the current token owner"
+    },
+    {
+      "code": 6006,
+      "name": "EventNotEnded",
+      "msg": "Event has not ended yet"
+    },
+    {
+      "code": 6007,
+      "name": "AlreadyReported",
+      "msg": "Revenue already reported"
+    },
+    {
+      "code": 6008,
+      "name": "RevenueNotReported",
+      "msg": "Revenue not yet reported"
+    },
+    {
+      "code": 6009,
+      "name": "AlreadyClaimed",
+      "msg": "Token revenue already claimed"
+    },
+    {
+      "code": 6010,
+      "name": "Unauthorized",
+      "msg": "Unauthorized caller"
+    },
+    {
+      "code": 6011,
+      "name": "IncorrectAmount",
+      "msg": "Incorrect purchase amount"
+    },
+    {
+      "code": 6012,
+      "name": "EventCancelled",
+      "msg": "Event is cancelled"
+    },
+    {
+      "code": 6013,
+      "name": "EventNotCancelled",
+      "msg": "Event is not cancelled"
+    },
+    {
+      "code": 6014,
+      "name": "PriceTooLow",
+      "msg": "New price must be greater than current price"
+    },
+    {
+      "code": 6015,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6016,
+      "name": "NotApprovedCreator",
+      "msg": "Not an approved DaddyX Creator"
+    },
+    {
+      "code": 6017,
+      "name": "AlreadyApplied",
+      "msg": "Creator already applied"
+    },
+    {
+      "code": 6018,
+      "name": "NotPending",
+      "msg": "Creator not pending"
+    },
+    {
+      "code": 6019,
+      "name": "MilestoneAlreadyReleased",
+      "msg": "Milestone already released"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidMilestoneIndex",
+      "msg": "Invalid milestone index"
+    },
+    {
+      "code": 6021,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient escrow balance"
+    },
+    {
+      "code": 6022,
+      "name": "TokenAlreadyInitialized",
+      "msg": "Token already initialized"
+    }
+  ]
+}
