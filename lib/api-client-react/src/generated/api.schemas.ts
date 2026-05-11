@@ -214,6 +214,20 @@ export interface MilestoneApproveBody {
   adminWallet: string;
 }
 
+export interface RejectCreatorBody {
+  wallet: string;
+  adminWallet?: string;
+  reason?: string | null;
+}
+
+export interface ClaimResult {
+  eventId: string;
+  wallet: string;
+  tokensClaimed: number;
+  revenueShareSol: number;
+  alreadyClaimed: boolean;
+}
+
 export type GetCreatorStatusParams = {
   wallet: string;
 };

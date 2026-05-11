@@ -5,13 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  useListPendingCreators, useApproveCreator, useGetOraclePending,
+  useListPendingCreators, useApproveCreator, useRejectCreator, useGetOraclePending,
   getListPendingCreatorsQueryKey, getGetOraclePendingQueryKey
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import { useApproveCreator, useRejectCreator } from "@workspace/api-client-react";
 
 export default function AdminPage() {
   const { toast } = useToast();

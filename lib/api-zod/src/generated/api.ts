@@ -284,6 +284,47 @@ export const ApproveCreatorResponse = zod.object({
 });
 
 /**
+ * @summary Admin - reject a creator application
+ */
+export const RejectCreatorBody = zod.object({
+  wallet: zod.string(),
+  adminWallet: zod.string().optional(),
+  reason: zod.string().nullish(),
+});
+
+export const RejectCreatorResponse = zod.object({
+  id: zod.string(),
+  wallet: zod.string(),
+  name: zod.string(),
+  country: zod.string(),
+  email: zod.string(),
+  status: zod.enum(["pending", "approved", "suspended"]),
+  appliedAt: zod.string(),
+  approvedAt: zod.string().nullish(),
+  organization: zod.string().nullish(),
+  city: zod.string().nullish(),
+  website: zod.string().nullish(),
+  pastEvents: zod.string().nullish(),
+  expectedUse: zod.string().nullish(),
+});
+
+/**
+ * @summary Fan claims revenue share for tokens held in a settled event
+ */
+export const ClaimRevenueParams = zod.object({
+  wallet: zod.coerce.string(),
+  eventId: zod.coerce.string(),
+});
+
+export const ClaimRevenueResponse = zod.object({
+  eventId: zod.string(),
+  wallet: zod.string(),
+  tokensClaimed: zod.number(),
+  revenueShareSol: zod.number(),
+  alreadyClaimed: zod.boolean(),
+});
+
+/**
  * @summary Create a campaign after on-chain confirmation
  */
 export const CreateCampaignBody = zod.object({

@@ -19,6 +19,7 @@ import type {
 import type {
   ApproveCreatorBody,
   Campaign,
+  ClaimResult,
   CreateCampaignBody,
   CreateEventBody,
   Creator,
@@ -32,6 +33,7 @@ import type {
   MilestoneRequestBody,
   PortfolioToken,
   PurchaseBody,
+  RejectCreatorBody,
   ReportRevenueBody,
   SimulationPoint,
   StatsSummary,
@@ -970,6 +972,177 @@ export const useApproveCreator = <
   TContext
 > => {
   return useMutation(getApproveCreatorMutationOptions(options));
+};
+
+/**
+ * @summary Admin - reject a creator application
+ */
+export const getRejectCreatorUrl = () => {
+  return `/api/admin/creators/reject`;
+};
+
+export const rejectCreator = async (
+  rejectCreatorBody: RejectCreatorBody,
+  options?: RequestInit,
+): Promise<Creator> => {
+  return customFetch<Creator>(getRejectCreatorUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(rejectCreatorBody),
+  });
+};
+
+export const getRejectCreatorMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectCreator>>,
+    TError,
+    { data: BodyType<RejectCreatorBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rejectCreator>>,
+  TError,
+  { data: BodyType<RejectCreatorBody> },
+  TContext
+> => {
+  const mutationKey = ["rejectCreator"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rejectCreator>>,
+    { data: BodyType<RejectCreatorBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return rejectCreator(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RejectCreatorMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rejectCreator>>
+>;
+export type RejectCreatorMutationBody = BodyType<RejectCreatorBody>;
+export type RejectCreatorMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Admin - reject a creator application
+ */
+export const useRejectCreator = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectCreator>>,
+    TError,
+    { data: BodyType<RejectCreatorBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof rejectCreator>>,
+  TError,
+  { data: BodyType<RejectCreatorBody> },
+  TContext
+> => {
+  return useMutation(getRejectCreatorMutationOptions(options));
+};
+
+/**
+ * @summary Fan claims revenue share for tokens held in a settled event
+ */
+export const getClaimRevenueUrl = (wallet: string, eventId: string) => {
+  return `/api/wallet/${wallet}/claim/${eventId}`;
+};
+
+export const claimRevenue = async (
+  wallet: string,
+  eventId: string,
+  options?: RequestInit,
+): Promise<ClaimResult> => {
+  return customFetch<ClaimResult>(getClaimRevenueUrl(wallet, eventId), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getClaimRevenueMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof claimRevenue>>,
+    TError,
+    { wallet: string; eventId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof claimRevenue>>,
+  TError,
+  { wallet: string; eventId: string },
+  TContext
+> => {
+  const mutationKey = ["claimRevenue"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof claimRevenue>>,
+    { wallet: string; eventId: string }
+  > = (props) => {
+    const { wallet, eventId } = props ?? {};
+
+    return claimRevenue(wallet, eventId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ClaimRevenueMutationResult = NonNullable<
+  Awaited<ReturnType<typeof claimRevenue>>
+>;
+
+export type ClaimRevenueMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Fan claims revenue share for tokens held in a settled event
+ */
+export const useClaimRevenue = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof claimRevenue>>,
+    TError,
+    { wallet: string; eventId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof claimRevenue>>,
+  TError,
+  { wallet: string; eventId: string },
+  TContext
+> => {
+  return useMutation(getClaimRevenueMutationOptions(options));
 };
 
 /**
