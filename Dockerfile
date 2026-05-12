@@ -15,6 +15,9 @@ COPY artifacts/daddyx/package.json       ./artifacts/daddyx/
 COPY lib/api-client-react/package.json   ./lib/api-client-react/
 COPY lib/db/package.json                 ./lib/db/
 
+# Strip the preinstall guard: corepack 0.29+ prefixes npm_config_user_agent
+# with "corepack/X.Y.Z", so the "pnpm/*" case pattern never matches in Docker.
+RUN node -e "const p=require('./package.json');delete p.scripts.preinstall;require('fs').writeFileSync('package.json',JSON.stringify(p,null,2));"
 RUN pnpm install --frozen-lockfile
 
 # ─── Stage 3: build ──────────────────────────────────────────────────────────
