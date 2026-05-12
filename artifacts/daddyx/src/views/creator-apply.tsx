@@ -62,7 +62,7 @@ export default function CreatorApplyPage() {
   useEffect(() => {
     if (!publicKey) { setSolBalance(null); return; }
     connection.getBalance(publicKey)
-      .then(b => setSolBalance(b / LAMPORTS_PER_SOL))
+      .then(b => setSolBalance(b / 1_000_000_000))
       .catch(() => setSolBalance(null));
   }, [publicKey, connection]);
 
