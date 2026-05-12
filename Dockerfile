@@ -15,6 +15,7 @@ COPY artifacts/daddyx/package.json       ./artifacts/daddyx/
 COPY lib/api-client-react/package.json   ./lib/api-client-react/
 COPY lib/db/package.json                 ./lib/db/
 
+ENV npm_config_user_agent="pnpm/0 npm/? node/? linux x64"
 RUN pnpm install --frozen-lockfile
 
 # Source for the frontend and its local libraries
