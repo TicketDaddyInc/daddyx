@@ -27,6 +27,9 @@ WORKDIR /app
 # Bring in installed deps
 COPY --from=deps /app/ .
 
+# Root TypeScript configs are referenced by workspace packages.
+COPY tsconfig.json tsconfig.base.json ./
+
 # Source for the frontend and its local libraries
 COPY artifacts/daddyx     ./artifacts/daddyx
 COPY lib/api-client-react ./lib/api-client-react
@@ -61,4 +64,3 @@ EXPOSE 3000
 USER nextjs
 
 CMD ["node", "artifacts/daddyx/server.js"]
-

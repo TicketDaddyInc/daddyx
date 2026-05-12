@@ -25,10 +25,19 @@ catalog:
 
 minimumReleaseAge: 1440
 
-onlyBuiltDependencies:
-  - '@swc/core'
-  - msw
-  - unrs-resolver
+allowBuilds:
+  '@stellar/stellar-sdk': false
+  '@swc/core': true
+  blake-hash: false
+  bufferutil: false
+  esbuild: true
+  msw: true
+  protobufjs: true
+  sharp: true
+  tiny-secp256k1: false
+  unrs-resolver: true
+  usb: false
+  utf-8-validate: false
 
 overrides:
   '@esbuild-kit/esm-loader': npm:tsx@^4.21.0
